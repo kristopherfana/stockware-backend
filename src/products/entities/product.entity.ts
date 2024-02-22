@@ -1,55 +1,45 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-import { Attribute } from "src/attributes/entities/attribute.entity";
 import { Category } from "src/categories/entities/category.entity";
-import { Image } from "src/shared/entities/image.entity";
 import { User } from "src/users/entities/user.entity";
 
 @Entity({ name: "products" })
 export class Product {
     @PrimaryGeneratedColumn()
-    id: number;
+    id?: number;
 
     @Column()
     name: string;
 
     @Column('text')
-    description: string;
+    description?: string;
 
-    @Column('text')
-    marketing_text: string;
-
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
-    price: number;
+    @Column()
+    quantity: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    cost: number;
+    price?: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    profit: number;
+    cost?: number;
 
-    @OneToMany(
-        () => Image,
-        image => image.product,
-        { cascade: true }
-    )
-    default_images: Image[];
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    profit?: number | null;
 
-    @ManyToOne(() => User, user => user.products)
+    @Column({ default: null })
+    image_url?: string;
+
+    @ManyToOne(() => User, user => user.products, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'createdBy' })
-    createdBy: User;
+    createdBy?: User;
 
-    @ManyToMany(() => Attribute, { cascade: true })
-    @JoinTable({ name: "products_attributes" })
-    attributes: Attribute[];
-
-    @ManyToMany(() => Category)
-    @JoinTable({ name: "products_categories" })
-    categories: Category[];
+    @ManyToOne(() => Category, category => category.products, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'categoryId' })
+    category?: Category;
 
     @CreateDateColumn()
-    created_at: Date;
+    created_at?: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
+    updated_at?: Date;
 }

@@ -1,16 +1,23 @@
+import * as bcrypt from 'bcrypt';
+
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+
+import { Category } from 'src/categories/entities/category.entity';
 import { Product } from "src/products/entities/product.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({ name: "users" })
 export class User {
     @PrimaryGeneratedColumn()
-    user_id: number;
+    id: number;
 
-    @Column()
-    username: string;
-
-    @Column()
+    @Column({ unique: true, nullable: false })
     email: string;
+
+    @Column({ name: "first_name" })
+    firstName: string;
+
+    @Column({ name: "last_name" })
+    lastName: string;
 
     @Column()
     password: string;
@@ -22,6 +29,18 @@ export class User {
     })
     role: Role;
 
+    @Column({ default: null })
+    token: string | null;
+
+    @Column({ default: null })
+    tokenExpiry: Date | null;
+
+    @Column({ default: null, name: "last_login" })
+    lastLogin: Date;
+
+    @Column({ default: null })
+    image_url?: string;
+
     @CreateDateColumn()
     created_at: Date;
 
@@ -30,8 +49,20 @@ export class User {
     })
     updated_at: Date;
 
-    @OneToMany(() => Product, product => product.createdBy)
+    @OneToMany(() => Product, product => product.createdBy, { cascade: true })
     products: Product[];
+
+    @OneToMany(() => Category, category => category.createdBy, { cascade: true })
+    categories: Category[];
+
+    async validatePassword(password: string) {
+        const isMatch = await bcrypt.compare(password, this.password);
+        return isMatch;
+    }
 }
 
-export type Role = 'user' | 'cashier' | 'admin';
+export enum Role {
+    User = 'user',
+    Cashier = 'cashier',
+    Admin = 'admin',
+}
