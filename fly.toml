@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for stockware-api on 2024-10-27T16:00:49+02:00
+# fly.toml app configuration file generated for stockware on 2024-10-27T17:38:26+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'stockware-api'
+app = 'stockware'
 primary_region = 'cdg'
 
 [build]
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true

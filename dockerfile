@@ -8,8 +8,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY --chown=node:node . .
-RUN npm ci \
-    && npm run build \
+RUN npm run build \
     && npm prune --omit=dev
 
 # ---
@@ -24,4 +23,5 @@ COPY --from=builder --chown=node:node /home/node/package*.json ./
 COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
 
+EXPOSE 8080
 CMD ["node", "dist/main.js"]
