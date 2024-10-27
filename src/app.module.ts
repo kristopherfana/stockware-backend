@@ -20,13 +20,13 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot(
       {
         isGlobal: true,
-        envFilePath: ['Config/.env.dev'],
+        envFilePath: ['.env'],
       }
     ),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        type: "mysql",
+        type: "postgres",
         host: configService.get('DATABASE_HOST'),
         port: configService.get('DATABASE_PORT'),
         username: configService.get('DATABASE_USER'),
@@ -35,7 +35,11 @@ import { UsersModule } from './users/users.module';
         entities: [
           User, Product, Category,
         ],
-        synchronize: true
+        synchronize: configService.get('SYNCHRONIZE_DB'),
+        ssl: {
+          rejectUnauthorized: false,
+          cert: configService.get('DATABASE_CA_CERTIFICATE')
+        },
       }),
       inject: [ConfigService]
     }),

@@ -24,7 +24,6 @@ export class CategoriesService {
     if (file) {
       return this.imageService.uploadPicture(file).pipe(
         map((response) => {
-          console.log("hey")
           return this.categoryRepository.save({ ...category, image_url: response?.data.data.url });
         }
         )

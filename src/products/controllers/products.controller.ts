@@ -17,7 +17,6 @@ export class ProductsController {
   @Roles(Role.Admin, Role.Cashier)
   @UseInterceptors(FileInterceptor('file'))
   create(@Body() createProductDto: CreateProductDto, @UploadedFile() file: any) {
-    console.log(file);
     return this.productsService.create(createProductDto, file);
   }
 

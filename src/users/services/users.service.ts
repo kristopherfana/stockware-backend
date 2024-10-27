@@ -30,7 +30,6 @@ export class UsersService {
     if (file) {
       return this.imageService.uploadPicture(file).pipe(
         map((response) => {
-          console.log("Here now");
           return this.userRepository.save({ ...createUserDto, image_url: response?.data.data.url });
         }
         )
@@ -71,7 +70,6 @@ export class UsersService {
 
     // compare passwords 
     const areEqual = await user.validatePassword(password);
-    console.log(areEqual);
 
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);

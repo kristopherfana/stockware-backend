@@ -39,13 +39,11 @@ export class AuthService {
     }
 
     async login(loginUserDto: LoginUserDto): Promise<any> {
-        console.log('Login');
         let user = await this.usersService.findByLogin(loginUserDto);
         let status: RegistrationStatus = {
             success: true,
             message: `Authenticated as ${user.email}`,
         };
-        console.log(user);
         const token = await this._createToken(user);
         this.usersService.update(user.id, { token: token, lastLogin: new Date(), tokenExpiry: this.getExpiryDate(token) })
         return {
@@ -67,8 +65,6 @@ export class AuthService {
             throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
         }
         if ((new Date()) > user.tokenExpiry) {
-            console.log(user.tokenExpiry);
-            console.log(new Date())
             throw new HttpException('Token expired', HttpStatus.UNAUTHORIZED);
         }
         return user;
