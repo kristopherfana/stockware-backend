@@ -8,10 +8,10 @@ let app;
 export default async function handler(req, res) {
   // Bootstrap our NestJS app on cold start
   if (!app) {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule);
 
     app.enableCors({
-      origin: ['http://localhost:4200', 'https://stockware.kristopherfana.me'],
+      origin: '*',
       credentials: true,
     });
 
